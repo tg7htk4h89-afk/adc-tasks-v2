@@ -7,6 +7,7 @@
 
 var API_BASE='https://n8n.kib-cc-wfm.com/webhook';
 var SES_KEY='kib_ops_session';
+if (!window.__MOCK_API__) {
 var API={
   _t:function(){var s=AUTH.getSession();return s?s.session_token:null;},
   post:async function(action,body){
@@ -21,7 +22,8 @@ var API={
     return d.data;
   },
   get:async function(action,params){return this.post(action,params||{});}
-};
+};}
+
 var AUTH={
   getSession:function(){try{var s=JSON.parse(localStorage.getItem(SES_KEY));return s&&new Date(s.expires_at)>new Date()?s:null;}catch(e){return null;}},
   requireAuth:function(){if(!this.getSession())window.location.href='./login.html';},
