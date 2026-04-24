@@ -217,7 +217,7 @@ async function subT(){
       recurring_type:recurringType||''
     });
     UTILS.toast('Task created: '+d.task_id,'success');
-    setTimeout(function(){location.href='/tasks.html';},1200);
+    setTimeout(function(){location.href='./tasks.html';},1200);
   }catch(ex){
     UTILS.toast('Error: '+ex.message,'error');
     if(btn){btn.disabled=false;btn.textContent='✓ Create Task';}

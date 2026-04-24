@@ -24,8 +24,8 @@ var API={
 };
 var AUTH={
   getSession:function(){try{var s=JSON.parse(localStorage.getItem(SES_KEY));return s&&new Date(s.expires_at)>new Date()?s:null;}catch(e){return null;}},
-  requireAuth:function(){if(!this.getSession())window.location.href='/login.html';},
-  logout:function(){localStorage.removeItem(SES_KEY);window.location.href='/login.html';},
+  requireAuth:function(){if(!this.getSession())window.location.href='./login.html';},
+  logout:function(){localStorage.removeItem(SES_KEY);window.location.href='./login.html';},
   hasRole:function(r){var s=this.getSession();if(!s)return false;return Array.isArray(r)?r.indexOf(s.role)!==-1:s.role===r;},
   canDo:function(a){var s=this.getSession();if(!s)return false;var m={'tasks.create':['HoD','Manager','DGM','DataEntry','QA Manager'],'handover.create':['HoD','Manager','TL','AL'],'training.create':['HoD','Manager','QA Manager'],'sales.entry':['HoD','Manager','TL','AL'],'settings.edit':['HoD','DGM']};if(a==='tasks.create'&&window.KIB_HIERARCHY){return KIB_HIERARCHY.canCreateTask(s.role);}return m[a]?m[a].indexOf(s.role)!==-1:true;},
   getUserId:function(){var s=this.getSession();return s?s.user_id:null;},
