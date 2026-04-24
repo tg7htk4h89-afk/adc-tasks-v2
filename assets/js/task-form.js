@@ -135,12 +135,10 @@ async function submitTask(){
   var title=U.el('fTitle')?U.el('fTitle').value.trim():'';
   var cat  =U.el('fCat')  ?U.el('fCat').value:'';
   var pri  =U.el('fPri')  ?U.el('fPri').value:'';
-  var sv   =U.el('fSV')   ?U.el('fSV').value:'';
 
   if(!title)             { showErr('Please enter a task title.');            return; }
   if(!cat)               { showErr('Please select a category.');             return; }
   if(!pri)               { showErr('Please select a priority.');             return; }
-  if(!sv)                { showErr('Please enter an SLA value.');            return; }
   if(!_assignees.length) { showErr('Please select at least one assignee.');  return; }
 
   var recOn=U.el('recToggle')&&U.el('recToggle').checked;
@@ -156,10 +154,8 @@ async function submitTask(){
       category:       cat,
       priority:       pri,
       due_date:       U.el('fDue')?U.el('fDue').value||'':'',
-      sla_value:      sv,
-      sla_unit:       U.el('fSU')?U.el('fSU').value:'hours',
-      assignees:      _assignees,
-      subtasks:       _subtasks,
+      assignees_json: JSON.stringify(_assignees),
+      subtasks_json:  JSON.stringify(_subtasks),
       recurring_flag: recOn?'TRUE':'FALSE',
       recurring_type: _recType||''
     });

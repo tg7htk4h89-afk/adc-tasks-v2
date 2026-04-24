@@ -16,26 +16,22 @@ var AUTH = {
   can:  function(r){ var s=this.get(); if(!s)return false; return Array.isArray(r)?r.indexOf(s.role)!==-1:s.role===r; }
 };
 
-/* ── API — skipped if mock.js already set it ── */
-if(!window.__MOCK__){
-  var API = {
-    call: async function(action, data){
-      var s = AUTH.get();
-      var body = Object.assign({}, data||{});
-      if(s) body.session_token = s.session_token;
-      var r = await fetch(N8N+'/kib/'+action.replace(/_/g,'-'), {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(body)
-      });
-      var txt = await r.text(), d;
-      try{ d = JSON.parse(txt); }catch(e){ throw new Error('Server error '+r.status); }
-      if(!d.success) throw new Error(d.error&&d.error.message ? d.error.message : d.message||'Error');
-      return d.data;
-    },
-    get:  function(a,b){ return this.call(a,b); },
-    post: function(a,b){ return this.call(a,b); }
-  };
-}
+/* ── API CLIENT ── */
+var API = {
+  _t: function(){ var s=AUTH.get(); return s?s.session_token:null; },
+  post: async function(action, body){
+    var path = action.replace(/_/g,'-');
+    var url  = N8N+'/kib/'+path;
+    var p = Object.assign({}, body||{});
+    var t = this._t(); if(t) p.session_token=t;
+    var r = await fetch(url, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});
+    var txt = await r.text(); var d;
+    try{ d=JSON.parse(txt); }catch(e){ throw new Error('Server '+r.status+': '+(txt||'empty').slice(0,120)); }
+    if(!d.success) throw new Error(d.error&&d.error.message?d.error.message:d.message||'API error');
+    return d.data;
+  },
+  get: function(a,b){ return this.post(a,b); }
+};
 
 /* ── UTILS ── */
 var U = {

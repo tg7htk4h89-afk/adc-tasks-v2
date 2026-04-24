@@ -119,16 +119,7 @@
           <label class="tf-lbl">Deadline</label>
           <input type="date" class="tf-inp" id="fDue">
         </div>
-        <div class="tf-grp">
-          <label class="tf-lbl">SLA <span class="req">*</span></label>
-          <div style="display:flex;gap:8px">
-            <input type="number" class="tf-inp" id="fSV" placeholder="e.g. 4" min="1" style="flex:1">
-            <select class="tf-sel" id="fSU" style="width:110px">
-              <option value="hours">Hours</option>
-              <option value="days">Days</option>
-            </select>
-          </div>
-        </div>
+
       </div>
     </div>
 
@@ -197,7 +188,6 @@
 <div class="more-bg" id="moreBg" onclick="this.classList.remove('open');document.getElementById('moreSheet').classList.remove('open')"></div>
 <div class="more-sheet" id="moreSheet"><div class="more-handle"></div><div class="more-grid"><a href="./training.html" class="more-item">&#128218; Training</a><a href="./settings.html" class="more-item">&#9881; Settings</a><div class="more-item" onclick="AUTH.out()">&#8594; Sign Out</div></div></div>
 
-<script src="./assets/js/mock.js"></script>
 <script src="./assets/js/auth.js"></script>
 <script src="./assets/js/task-form.js"></script>
 </body>

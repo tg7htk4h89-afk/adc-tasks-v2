@@ -99,6 +99,9 @@ function kanban(el){
   }
   el.innerHTML = COLS.map(function(col){
     var items = _tasks.filter(function(t){
+      if(col.id==='Overdue'){
+        return t.status==='Overdue'||(t.is_overdue==='TRUE'||t.is_overdue===true)&&t.status!=='Completed';
+      }
       return (STATUS_GROUP[col.id]||[col.id]).indexOf(t.status)!==-1;
     });
     return '<div class="kb-col">'+
@@ -123,7 +126,10 @@ function mobileList(el){
   }
   var html='';
   COLS.forEach(function(col){
-    var items=_tasks.filter(function(t){return (STATUS_GROUP[col.id]||[col.id]).indexOf(t.status)!==-1;});
+    var items=_tasks.filter(function(t){
+      if(col.id==='Overdue') return t.status==='Overdue'||(t.is_overdue==='TRUE'||t.is_overdue===true)&&t.status!=='Completed';
+      return (STATUS_GROUP[col.id]||[col.id]).indexOf(t.status)!==-1;
+    });
     if(!items.length) return;
     html+='<div style="margin-bottom:20px">'+
       '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
@@ -141,7 +147,9 @@ function mobileList(el){
 function card(t){
   var pct=Math.min(100,t.progress_pct||0);
   var an=t.assigned_to_name&&t.assigned_to_name!=='undefined'?t.assigned_to_name:null;
-  var due=U.due(t.due_date);
+  var due=U.due(t.due_datetime||t.due_date);
+  // Overdue from DB flag
+  if((t.is_overdue==='TRUE'||t.is_overdue===true)&&t.status!=='Completed') due={label:'Overdue',over:true};
   return '<button class="kb-card'+(t.status==='Overdue'?' ov':'')+'" data-id="'+t.task_id+'">'+
     '<div class="kb-id">'+U.esc(t.task_id)+'</div>'+
     '<div class="kb-ttl">'+U.esc(t.title)+'</div>'+
@@ -214,7 +222,7 @@ function renderHead(t){
         '<div style="font-size:18px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:8px">'+U.esc(t.title)+'</div>'+
         '<div style="display:flex;align-items:center;gap:16px;font-size:11px;color:rgba(255,255,255,.5)">'+
           (t.category?'<span>'+U.esc(t.category)+'</span>':'')+
-          (t.due_date?'<span>Due '+U.date(t.due_date)+'</span>':'')+
+          (t.due_date?'<span>Due '+U.date(t.due_datetime||t.due_date)+'</span>':'')+
           '<span>SLA '+Math.round(t.sla_pct||0)+'%</span>'+
         '</div>'+
       '</div>'+
@@ -237,7 +245,16 @@ function switchTab(id,el){
 
 function renderBody(d){
   var body=U.el('tBody'); if(!body) return;
-  var t=d.task, sub=d.subtasks||[], cmt=d.comments||[], act=d.activity||[];
+  var t=d.task;
+  var sub=[];
+  try{ sub=Array.isArray(t.subtasks_data)?t.subtasks_data:JSON.parse(t.subtasks_data||'[]'); }catch(e){}
+  var cmt=[];
+  try{ cmt=Array.isArray(t.comments_data)?t.comments_data:JSON.parse(t.comments_data||'[]'); }catch(e){}
+  var act=[];
+  // Normalize subtask fields from DB (subtask_id, title, is_done/status, assigned_to_name)
+  sub=sub.map(function(s){ return {subtask_id:s.subtask_id||s.id,title:s.title,status:s.is_done||s.done||s.status==='Done'||s.status==='Completed'?'Done':'Pending',assigned_to_name:s.assigned_to_name||''}; });
+  // Normalize comment fields from DB
+  cmt=cmt.map(function(c){ return {comment_id:c.comment_id||c.id,author_name:c.author_name||c.by_name||'',body:c.body||c.text||c.content||'',created_at:c.created_at||''}; });
   var an=t.assigned_to_name&&t.assigned_to_name!=='undefined'?t.assigned_to_name:null;
   var pct=Math.min(100,t.progress_pct||0);
 

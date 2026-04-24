@@ -225,9 +225,9 @@ async function submitTraining(){
       deadline:       deadline,
       description:    U.el('fDesc') ? U.el('fDesc').value : '',
       target_type:    targetType,
-      target_agents:  targetAgents,
-      total_agents:   targetAgents.length,
-      trainers:       _selectedTrainers
+      target_agents_json:    JSON.stringify(targetAgents),
+      assigned_trainers_json: JSON.stringify(_selectedTrainers),
+      total_agents:           targetAgents.length
     });
     showMsg('Training plan created successfully!', 'success');
     setTimeout(function(){ location.href = './training.html'; }, 1200);

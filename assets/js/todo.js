@@ -20,8 +20,8 @@ function today(){ return new Date().toISOString().slice(0,10); }
 function nd(d){ return d?String(d).slice(0,10):null; }
 function render(){ updHero(); updFilters(); renderList(); }
 function updHero(){
-  var td=today(),p=_todos.filter(function(t){return t.status!=='Completed';}),
-      dn=_todos.filter(function(t){return t.status==='Completed';}),
+  var td=today(),p=_todos.filter(function(t){return t.status!=='Done'&&t.status!=='Completed';}),
+      dn=_todos.filter(function(t){return t.status==='Done'||t.status==='Completed';}),
       ov=p.filter(function(t){var n=nd(t.due_date);return n&&n<td;}),
       du=p.filter(function(t){return nd(t.due_date)===td;});
   U.set('hPend',p.length); U.set('hDone',dn.length); U.set('hOver',ov.length); U.set('hDue',du.length);
@@ -31,8 +31,8 @@ function updHero(){
   if(r){var c=2*Math.PI*32;r.style.strokeDashoffset=c-(pct/100)*c;r.setAttribute('stroke-dasharray',c);}
 }
 function updFilters(){
-  var td=today(),p=_todos.filter(function(t){return t.status!=='Completed';}),
-      dn=_todos.filter(function(t){return t.status==='Completed';}),
+  var td=today(),p=_todos.filter(function(t){return t.status!=='Done'&&t.status!=='Completed';}),
+      dn=_todos.filter(function(t){return t.status==='Done'||t.status==='Completed';}),
       ov=p.filter(function(t){var n=nd(t.due_date);return n&&n<td;}),
       du=p.filter(function(t){return nd(t.due_date)===td;});
   U.set('cAll',_todos.length);U.set('cPend',p.length);U.set('cOver',ov.length);U.set('cDue',du.length);U.set('cDone',dn.length);
@@ -45,10 +45,10 @@ function setTF(f,el){
 }
 function renderList(){
   var td=today(),items;
-  if(_tf==='pending') items=_todos.filter(function(t){return t.status!=='Completed';});
-  else if(_tf==='done') items=_todos.filter(function(t){return t.status==='Completed';});
-  else if(_tf==='overdue') items=_todos.filter(function(t){var n=nd(t.due_date);return t.status!=='Completed'&&n&&n<td;});
-  else if(_tf==='today') items=_todos.filter(function(t){return t.status!=='Completed'&&nd(t.due_date)===td;});
+  if(_tf==='pending') items=_todos.filter(function(t){return t.status!=='Done'&&t.status!=='Completed';});
+  else if(_tf==='done') items=_todos.filter(function(t){return t.status==='Done'||t.status==='Completed';});
+  else if(_tf==='overdue') items=_todos.filter(function(t){var n=nd(t.due_date);return t.status!=='Done'&&t.status!=='Completed'&&n&&n<td;});
+  else if(_tf==='today') items=_todos.filter(function(t){return t.status!=='Done'&&t.status!=='Completed'&&nd(t.due_date)===td;});
   else items=_todos.slice();
   var list=U.el('tdList');if(!list)return;
   if(!items.length){
@@ -58,10 +58,10 @@ function renderList(){
   }
   if(_tf==='all'||_tf==='pending'){
     var groups=[
-      {l:'Overdue',   i:items.filter(function(t){var n=nd(t.due_date);return t.status!=='Completed'&&n&&n<td;})},
-      {l:'Due Today', i:items.filter(function(t){return t.status!=='Completed'&&nd(t.due_date)===td;})},
-      {l:'Upcoming',  i:items.filter(function(t){var n=nd(t.due_date);return t.status!=='Completed'&&(!n||n>td);})},
-      {l:'Done',      i:items.filter(function(t){return t.status==='Completed';})}
+      {l:'Overdue',   i:items.filter(function(t){var n=nd(t.due_date);return t.status!=='Done'&&t.status!=='Completed'&&n&&n<td;})},
+      {l:'Due Today', i:items.filter(function(t){return t.status!=='Done'&&t.status!=='Completed'&&nd(t.due_date)===td;})},
+      {l:'Upcoming',  i:items.filter(function(t){var n=nd(t.due_date);return t.status!=='Done'&&t.status!=='Completed'&&(!n||n>td);})},
+      {l:'Done',      i:items.filter(function(t){return t.status==='Done'||t.status==='Completed';})}
     ].filter(function(g){return g.i.length;});
     list.innerHTML=groups.map(function(g){return grp(g.l,g.i,td);}).join('');
   }else{
@@ -74,7 +74,7 @@ function grp(l,items,td){
     items.map(function(t){return tdRow(t,td);}).join('');
 }
 function tdRow(t,td){
-  var n=nd(t.due_date),done=t.status==='Completed';
+  var n=nd(t.due_date),done=t.status==='Done'||t.status==='Completed';
   var dStyle='',dIcon='',dLbl='';
   if(n){
     if(n<td){dStyle='color:#991B1B;background:var(--rdim)';dIcon='&#9888;&#65039;';dLbl=n;}
@@ -138,7 +138,7 @@ async function addTodo(){
 }
 async function toggleDone(id){
   var t=_todos.find(function(x){return x.todo_id===id;});if(!t)return;
-  var ns=t.status==='Completed'?'Pending':'Completed';
+  var ns=(t.status==='Done'||t.status==='Completed')?'Pending':'Done';
   try{await API.post('ptodo_update',{todo_id:id,status:ns});t.status=ns;render();}catch(ex){U.toast(ex.message,'error');}
 }
 async function delItem(id){
