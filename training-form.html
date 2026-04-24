@@ -1,11 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <title>New Training Plan — ADC Task Manager</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/shared.css">
-  <link rel="stylesheet" href="./assets/css/training-form.css">
+  <style>
+    .trf-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r3);box-shadow:var(--s1);padding:20px 22px;margin-bottom:16px}
+    .trf-title{font-size:13px;font-weight:800;color:var(--t1);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bdr);text-transform:uppercase;letter-spacing:.5px}
+    .trf-grp{margin-bottom:16px}
+    .trf-lbl{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+    .req{color:var(--red)}
+    .trf-inp,.trf-sel,.trf-ta{width:100%;padding:10px 13px;border:1.5px solid var(--bdr);border-radius:var(--r2);font-size:13px;font-family:var(--font);background:#FAFCFF;color:var(--t1);outline:none;transition:border-color .15s,box-shadow .15s}
+    .trf-inp:focus,.trf-sel:focus,.trf-ta:focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--bdim)}
+    .trf-inp::placeholder,.trf-ta::placeholder{color:var(--t3)}
+    .trf-ta{resize:vertical;min-height:80px}
+    .trf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    /* Target tabs */
+    .target-tabs{display:flex;background:var(--bg);border:1px solid var(--bdr);border-radius:var(--r2);padding:3px;margin-bottom:16px}
+    .target-tab{flex:1;padding:7px 10px;border:none;background:transparent;border-radius:var(--r1);font-size:12px;font-weight:600;color:var(--t2);cursor:pointer;font-family:inherit;transition:all .15s}
+    .target-tab:hover{background:rgba(255,255,255,.7);color:var(--t1)}
+    .target-tab.on{background:var(--card);color:var(--blue);font-weight:700;box-shadow:var(--s1)}
+    .tpanel{display:none}
+    .tpanel.on{display:block}
+    /* Multi-select dropdown */
+    .dd-wrap{position:relative}
+    .pills-box{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px;border:1.5px solid var(--bdr);border-radius:var(--r2);min-height:42px;cursor:pointer;background:#FAFCFF;transition:border-color .15s}
+    .pills-box:hover{border-color:var(--blue)}
+    .pills-box.open{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px var(--bdim)}
+    .pills-ph{color:var(--t3);font-size:13px;padding:2px 0}
+    .dpill{display:inline-flex;align-items:center;gap:4px;background:var(--blt);border:1px solid rgba(24,119,197,.25);color:var(--blue);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:600}
+    .dpill button{background:none;border:none;color:inherit;cursor:pointer;font-size:12px;opacity:.6;padding:0;line-height:1}
+    .dd-list{position:absolute;top:100%;left:0;right:0;z-index:50;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r2);box-shadow:var(--s3);max-height:240px;overflow-y:auto;margin-top:3px;display:none}
+    .dd-list.open{display:block}
+    .dd-search{padding:8px 12px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:8px;background:var(--bg);position:sticky;top:0}
+    .dd-search input{border:none;background:transparent;font-size:13px;outline:none;flex:1;font-family:var(--font);color:var(--t1)}
+    .dd-opt{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;font-size:13px;color:var(--t1);transition:background .12s}
+    .dd-opt:hover{background:var(--card2)}
+    .dd-opt.on{background:var(--blt);color:var(--blue)}
+    .dd-chk{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--bdr2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .dd-opt.on .dd-chk{background:var(--blue);border-color:var(--blue)}
+    /* Msg */
+    .trf-msg{display:none;margin-top:12px;padding:10px 14px;border-radius:var(--r2);font-size:13px;font-weight:600}
+    .trf-msg.error{background:var(--rdim);border:1px solid rgba(229,56,59,.25);color:#991B1B;display:block}
+    .trf-msg.success{background:var(--gdim);border:1px solid rgba(14,164,114,.25);color:#065F46;display:block}
+    @media(max-width:768px){.trf-row{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
 
@@ -15,39 +59,169 @@
     <div class="sb-logo">KIB</div>
     <div><div class="sb-name">ADC Task Manager</div><div class="sb-sub">Kuwait International Bank</div></div>
   </div>
-  <div style="padding:8px;flex:1"><div class="sb-section">Main</div><a href="./tasks.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Tasks</span></a><a href="./tasks-archive.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archive</span></a><a href="./todo.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>My To-Do</span></a><a href="./training.html" class="nav-a on"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Training</span></a><a href="./settings.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a></div>
+  <div style="padding:8px;flex:1">
+    <div class="sb-section">Main</div>
+    <a href="./tasks.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Tasks</span></a>
+    <a href="./tasks-archive.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archive</span></a>
+    <a href="./todo.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>My To-Do</span></a>
+    <a href="./training.html" class="nav-a on"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg><span>Training</span></a>
+    <a href="./settings.html" class="nav-a"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></a>
+  </div>
   <div style="padding:10px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0">
-    <div style="display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--r1)">
-      <div class="sb-av" id="sbAv"><span id="sbAvTxt">?</span></div>
-      <div style="flex:1;min-width:0"><div class="sb-uname" id="sbUname">—</div><div class="sb-urole" id="sbUrole">—</div></div>
-      <button onclick="AUTH.out()" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;padding:4px" title="Sign out"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    <div style="display:flex;align-items:center;gap:10px;padding:8px">
+      <div class="sb-av"><span id="sbAvTxt">?</span></div>
+      <div><div class="sb-uname" id="sbUname">—</div><div class="sb-urole" id="sbUrole">—</div></div>
+      <button onclick="AUTH.out()" style="background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;padding:4px;margin-left:auto"><svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
     </div>
   </div>
 </nav>
 
 <main class="main-content">
   <header class="top-bar">
-    <button class="sb-btn" id="sbBtn" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').style.display=document.getElementById('sidebar').classList.contains('open')?'block':'none'" aria-label="Menu"><svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <button class="sb-btn" id="sbBtn" onclick="document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').style.display=document.getElementById('sidebar').classList.contains('open')?'block':'none'">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <div class="tb-title">New Training Plan<small>ADC Task Manager</small></div>
   </header>
-  <div class="page-content"> <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px"> <div><h1 class="page-title">Create Training Plan <span style="font-size:10px;background:#0EA472;color:#fff;padding:2px 8px;border-radius:10px;font-weight:600;vertical-align:middle">v5</span></h1><p class="page-sub">Assign coaching or training to agents, teams, or the whole department</p></div> <a href="./training.html" class="btn btn-secondary">Back</a> </div> <!-- Training Info --> <div class="card"> <div class="card-title">Training Information</div> <div class="form-grid"> <div class="field"> <label>Title <span class="req">*</span></label> <input type="text" id="fTitle" placeholder="e.g. Transfer to Dirwaza Product Knowledge"> </div> <div class="field"> <label>Category <span class="req">*</span></label> <select id="fCat"> <option value="">Select category...</option> <option>Product Knowledge</option> <option>Compliance</option> <option>Soft Skills</option> <option>Process</option> <option>System Training</option> <option>Sales Technique</option> <option>Quality Assurance</option> <option>Other</option> </select> </div> <div class="field"> <label>Priority</label> <select id="fPri"> <option value="Medium">Medium</option> <option value="High">High</option> <option value="Critical">Critical</option> <option value="Low">Low</option> </select> </div> <div class="field"> <label>Deadline <span class="req">*</span></label> <input type="date" id="fDeadline"> </div> <div class="field form-full"> <label>Description</label> <textarea id="fDesc" placeholder="Training objectives, materials, what agents should know after completion..."></textarea> </div> </div> </div> <!-- Target Selection --> <div class="card"> <div class="card-title">Who Receives This Training</div> <!-- Target type tabs --> <div class="target-tabs"> <button class="target-tab active" onclick="setTargetType('individual')" id="tab-individual">Individual</button> <button class="target-tab" onclick="setTargetType('multiple')" id="tab-multiple">Multiple Agents</button> <button class="target-tab" onclick="setTargetType('team')" id="tab-team">Team</button> <button class="target-tab" onclick="setTargetType('department')" id="tab-department">Department</button> </div> <!-- Individual --> <div id="panel-individual"> <div class="field"> <label>Select Agent <span class="req">*</span></label> <select id="fSingleAgent"><option value="">Select agent...</option></select> </div> </div> <!-- Multiple agents --> <div id="panel-multiple" style="display:none"> <div class="field"> <label>Select Agents <span class="req">*</span></label> <div class="multi-select-wrap"> <div class="pill-container" id="agentsPills" onclick="toggleDropdown('agentsDD')"> <span class="pill-placeholder" id="agentsPlaceholder">Click to select agents...</span> </div> <div class="dropdown-list" id="agentsDD" style="display:none"> <div class="dropdown-search"><svg width="14" height="14" fill="none" stroke="var(--t3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="agentsSearch" placeholder="Search agents..." oninput="filterDropdown('agentsSearch','agentsDDItems')"></div> <div id="agentsDDItems"></div> </div> </div> <div style="font-size:11px;color:var(--t3);margin-top:4px" id="agentsCount">0 agents selected</div> </div> </div> <!-- Team --> <div id="panel-team" style="display:none"> <div class="field"> <label>Select Team Leader <span class="req">*</span></label> <select id="fTeamTL" onchange="showTeamPreview()"> <option value="">Select team leader...</option> </select> </div> <div id="teamPreview" style="display:none;margin-top:12px;padding:12px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)"> <div style="font-size:11px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Team members that will receive training</div> <div id="teamPreviewList" style="display:flex;flex-wrap:wrap;gap:6px"></div> </div> </div> <!-- Department --> <div id="panel-department" style="display:none"> <div style="padding:14px;background:#E8F1FB;border-radius:8px;border:1px solid #B8D4F0"> <div style="font-size:13px;font-weight:600;color:#1365A0;margin-bottom:4px">All department agents will be assigned</div> <div style="font-size:12px;color:#4A7AB5" id="deptCount">Loading count...</div> </div> </div> </div> <!-- Trainer Selection --> <div class="card"> <div class="card-title">Assign Trainer(s)</div> <div class="field"> <label>Trainers <span class="req">*</span> <span style="font-size:10px;font-weight:400;color:var(--t3)">(select one or more)</span></label> <div class="multi-select-wrap"> <div class="pill-container" id="trainerPills" onclick="toggleDropdown('trainersDD')"> <span class="pill-placeholder" id="trainersPlaceholder">Click to select trainers...</span> </div> <div class="dropdown-list" id="trainersDD" style="display:none"> <div class="dropdown-search"><svg width="14" height="14" fill="none" stroke="var(--t3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg><input type="text" id="trainersSearch" placeholder="Search trainers..." oninput="filterDropdown('trainersSearch','trainersDDItems')"></div> <div id="trainersDDItems"></div> </div> </div> <div style="font-size:11px;color:var(--t3);margin-top:4px" id="trainersCount">0 trainers selected</div> </div> </div> <div style="display:flex;gap:10px;align-items:center"> <button class="btn btn-primary" onclick="submitTraining()">Create Training Plan</button> <a href="./training.html" class="btn btn-secondary">Cancel</a> </div> <div id="msg" style="display:none;margin-top:12px;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:600"></div> </div> </main> <!-- Mobile Bottom Navigation -->
+
+  <div class="page-content">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <div style="font-size:20px;font-weight:800;color:var(--t1)">Create Training Plan</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:3px">Assign coaching or training to agents, teams, or the whole department</div>
+      </div>
+      <a href="./training.html" class="btn btn-ghost">&#8592; Back</a>
+    </div>
+
+    <!-- Training Info -->
+    <div class="trf-card">
+      <div class="trf-title">Training Information</div>
+      <div class="trf-row">
+        <div class="trf-grp">
+          <label class="trf-lbl">Title <span class="req">*</span></label>
+          <input type="text" class="trf-inp" id="fTitle" placeholder="e.g. Product Knowledge — Digital Banking">
+        </div>
+        <div class="trf-grp">
+          <label class="trf-lbl">Category <span class="req">*</span></label>
+          <select class="trf-sel" id="fCat">
+            <option value="">Select category...</option>
+            <option>Product Knowledge</option><option>Compliance</option><option>Soft Skills</option>
+            <option>Process</option><option>System Training</option><option>Sales Technique</option>
+            <option>Quality Assurance</option><option>Other</option>
+          </select>
+        </div>
+        <div class="trf-grp">
+          <label class="trf-lbl">Priority</label>
+          <select class="trf-sel" id="fPri">
+            <option value="Medium">Medium</option><option value="High">High</option>
+            <option value="Critical">Critical</option><option value="Low">Low</option>
+          </select>
+        </div>
+        <div class="trf-grp">
+          <label class="trf-lbl">Deadline <span class="req">*</span></label>
+          <input type="date" class="trf-inp" id="fDeadline">
+        </div>
+      </div>
+      <div class="trf-grp">
+        <label class="trf-lbl">Description</label>
+        <textarea class="trf-ta" id="fDesc" placeholder="Training objectives, materials, expected outcomes..."></textarea>
+      </div>
+    </div>
+
+    <!-- Target Selection -->
+    <div class="trf-card">
+      <div class="trf-title">Who Receives This Training</div>
+      <div class="target-tabs">
+        <button class="target-tab on" id="ttab-individual" onclick="setTarget('individual')">Individual</button>
+        <button class="target-tab" id="ttab-multiple" onclick="setTarget('multiple')">Multiple Agents</button>
+        <button class="target-tab" id="ttab-team" onclick="setTarget('team')">Team</button>
+        <button class="target-tab" id="ttab-department" onclick="setTarget('department')">Department</button>
+      </div>
+
+      <!-- Individual -->
+      <div class="tpanel on" id="tpan-individual">
+        <div class="trf-grp">
+          <label class="trf-lbl">Select Agent <span class="req">*</span></label>
+          <select class="trf-sel" id="fSingleAgent"><option value="">Select agent...</option></select>
+        </div>
+      </div>
+
+      <!-- Multiple -->
+      <div class="tpanel" id="tpan-multiple">
+        <div class="trf-grp">
+          <label class="trf-lbl">Select Agents <span class="req">*</span></label>
+          <div class="dd-wrap">
+            <div class="pills-box" id="agentsPills" onclick="toggleDD('agentsDD')">
+              <span class="pills-ph" id="agentsPh">Click to select agents...</span>
+            </div>
+            <div class="dd-list" id="agentsDD">
+              <div class="dd-search">
+                <svg width="14" height="14" fill="none" stroke="var(--t3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <input type="text" id="agentsSearch" placeholder="Search agents..." oninput="filterDD('agentsSearch','agentsDDItems')">
+              </div>
+              <div id="agentsDDItems"></div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--t3);margin-top:4px" id="agentsCount">0 agents selected</div>
+        </div>
+      </div>
+
+      <!-- Team -->
+      <div class="tpanel" id="tpan-team">
+        <div class="trf-grp">
+          <label class="trf-lbl">Select Team Leader <span class="req">*</span></label>
+          <select class="trf-sel" id="fTeamTL" onchange="showTeamPreview()"><option value="">Select team leader...</option></select>
+        </div>
+        <div id="teamPreview" style="display:none;margin-top:12px;padding:12px;background:var(--bg);border-radius:var(--r2);border:1px solid var(--bdr)">
+          <div style="font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px">Team members that will receive training</div>
+          <div id="teamPreviewList" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        </div>
+      </div>
+
+      <!-- Department -->
+      <div class="tpanel" id="tpan-department">
+        <div style="padding:14px;background:var(--blt);border-radius:var(--r2);border:1px solid rgba(24,119,197,.2)">
+          <div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:4px">All department agents will be assigned</div>
+          <div style="font-size:12px;color:var(--t3)" id="deptCount">Loading count...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trainers -->
+    <div class="trf-card">
+      <div class="trf-title">Assign Trainer(s)</div>
+      <div class="trf-grp">
+        <label class="trf-lbl">Trainers <span class="req">*</span> <span style="font-size:10px;font-weight:400;color:var(--t3)">(select one or more)</span></label>
+        <div class="dd-wrap">
+          <div class="pills-box" id="trainerPills" onclick="toggleDD('trainersDD')">
+            <span class="pills-ph" id="trainersPh">Click to select trainers...</span>
+          </div>
+          <div class="dd-list" id="trainersDD">
+            <div class="dd-search">
+              <svg width="14" height="14" fill="none" stroke="var(--t3)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="trainersSearch" placeholder="Search trainers..." oninput="filterDD('trainersSearch','trainersDDItems')">
+            </div>
+            <div id="trainersDDItems"></div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px" id="trainersCount">0 trainers selected</div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div style="display:flex;gap:10px;align-items:center;margin-bottom:20px">
+      <button class="btn btn-blue" onclick="submitTraining()">Create Training Plan</button>
+      <a href="./training.html" class="btn btn-ghost">Cancel</a>
+    </div>
+    <div class="trf-msg" id="msg"></div>
+
+  </div>
 </main>
 
-<nav class="mbn" id="mbn">
-  <a href="./tasks.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Tasks</span></a>
-  <a href="./tasks-archive.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span>Archive</span></a>
-  <a href="./todo.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>To-Do</span></a>
-  <button class="mbn-a" onclick="document.getElementById('moreSheet').classList.add('open');document.getElementById('moreBg').classList.add('open')"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>More</span></button>
-</nav>
+<nav class="mbn"><a href="./tasks.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Tasks</span></a><a href="./tasks-archive.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/></svg><span>Archive</span></a><a href="./todo.html" class="mbn-a"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>To-Do</span></a><button class="mbn-a" onclick="document.getElementById('moreSheet').classList.add('open');document.getElementById('moreBg').classList.add('open')"><svg width="21" height="21" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>More</span></button></nav>
 <div class="more-bg" id="moreBg" onclick="this.classList.remove('open');document.getElementById('moreSheet').classList.remove('open')"></div>
-<div class="more-sheet" id="moreSheet">
-  <div class="more-handle"></div>
-  <div class="more-grid">
-    <a href="./training.html" class="more-item"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Training</a>
-    <a href="./settings.html" class="more-item"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/></svg>Settings</a>
-    <div class="more-item" onclick="AUTH.out()"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</div>
-  </div>
-</div>
+<div class="more-sheet" id="moreSheet"><div class="more-handle"></div><div class="more-grid"><a href="./training.html" class="more-item">&#128218; Training</a><a href="./settings.html" class="more-item">&#9881; Settings</a><div class="more-item" onclick="AUTH.out()">&#8594; Sign Out</div></div></div>
 
 <script src="./assets/js/mock.js"></script>
 <script src="./assets/js/auth.js"></script>
