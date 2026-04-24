@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Sign In — ADC Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy:#0D1B3E; --blue:#1877C5; --blue2:#1565A8;
+      --green:#0EA472; --red:#E5383B; --rdim:#FEE8E8;
+      --bg:#F0F4F9; --card:#fff; --bdr:#E4EAF3; --bdr2:#D0D9E8;
+      --t1:#0A1628; --t2:#4A5568; --t3:#8A9BB0;
+      --font:'IBM Plex Sans',system-ui,sans-serif;
+      --r2:10px; --r3:14px;
+      --sh:0 12px 40px rgba(10,22,40,.12),0 4px 12px rgba(10,22,40,.06);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:var(--font);-webkit-font-smoothing:antialiased}
+    body{
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;padding:20px;
+      background:
+        radial-gradient(circle at 15% 20%,rgba(24,119,197,.08) 0%,transparent 50%),
+        radial-gradient(circle at 85% 80%,rgba(13,27,62,.06) 0%,transparent 50%),
+        #F0F4F9;
+    }
+
+    .card{
+      width:100%;max-width:400px;
+      background:var(--card);border:1px solid var(--bdr);
+      border-radius:20px;box-shadow:var(--sh);
+      padding:36px 32px 28px;
+      animation:up .3s ease;
+    }
+    @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Brand */
+    .brand{text-align:center;margin-bottom:28px}
+    .logo{
+      width:60px;height:60px;margin:0 auto 14px;
+      background:linear-gradient(135deg,var(--navy),var(--blue));
+      border-radius:16px;display:flex;align-items:center;justify-content:center;
+      color:#fff;font-size:22px;font-weight:900;letter-spacing:-1px;
+      box-shadow:0 6px 20px rgba(24,119,197,.35);
+    }
+    .brand-name{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+    .brand-sub{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+
+    .divider{height:1px;background:var(--bdr);margin:0 0 24px}
+
+    /* Form */
+    .flbl{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+    .fgrp{margin-bottom:18px}
+    select,input{
+      width:100%;padding:10px 13px;
+      border:1.5px solid var(--bdr2);border-radius:var(--r2);
+      font-size:13px;font-family:var(--font);color:var(--t1);
+      background:#FAFCFF;outline:none;
+      transition:border-color .15s,background .15s,box-shadow .15s;
+      appearance:none;-webkit-appearance:none;
+    }
+    select{
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238A9BB0' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;background-position:right 12px center;
+      padding-right:36px;cursor:pointer;
+    }
+    select:focus,input:focus{
+      border-color:var(--blue);background:#fff;
+      box-shadow:0 0 0 3px rgba(24,119,197,.12);
+    }
+
+    /* PIN */
+    .pin-wrap{position:relative}
+    .pin-box{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 13px;border:1.5px solid var(--bdr2);border-radius:var(--r2);
+      background:#FAFCFF;cursor:text;transition:border-color .15s,box-shadow .15s;
+    }
+    .pin-box.focus{border-color:var(--blue);background:#fff;box-shadow:0 0 0 3px rgba(24,119,197,.12)}
+    .pin-lbl{font-size:12px;color:var(--t3);font-weight:500}
+    .pin-dots{display:flex;gap:8px}
+    .dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--bdr2);background:transparent;transition:all .15s}
+    .dot.on{background:var(--blue);border-color:var(--blue);transform:scale(1.1)}
+    .pin-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:text;font-size:16px;border:none;background:transparent}
+
+    /* Submit btn */
+    .btn-submit{
+      width:100%;padding:12px;margin-top:4px;
+      background:linear-gradient(135deg,var(--blue),var(--blue2));
+      color:#fff;border:none;border-radius:var(--r2);
+      font-size:14px;font-weight:700;font-family:var(--font);cursor:pointer;
+      box-shadow:0 4px 14px rgba(24,119,197,.35);
+      transition:all .18s;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .btn-submit:hover:not(:disabled){box-shadow:0 6px 20px rgba(24,119,197,.45);transform:translateY(-1px)}
+    .btn-submit:active:not(:disabled){transform:translateY(0)}
+    .btn-submit:disabled{opacity:.6;cursor:not-allowed}
+
+    /* Spinner */
+    .spin{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .loading .spin{display:block}
+    .loading .btn-txt{opacity:.7}
+
+    /* Error */
+    .err{display:none;margin-top:14px;padding:10px 13px;background:#FEF2F2;border:1px solid rgba(229,56,59,.25);border-radius:var(--r2);font-size:12px;color:#991B1B;font-weight:500;line-height:1.4;text-align:center}
+    .err.show{display:block}
+
+    /* Footer */
+    .footer{text-align:center;margin-top:24px;padding-top:18px;border-top:1px solid var(--bdr);font-size:11px;color:var(--t3)}
+    .footer strong{color:var(--blue);font-weight:600}
+
+    @media(max-width:480px){
+      .card{padding:28px 20px 24px;border-radius:16px}
+      .logo{width:52px;height:52px;font-size:18px}
+      .brand-name{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <div class="logo">KIB</div>
+    <div class="brand-name">ADC Task Manager</div>
+    <div class="brand-sub">Kuwait International Bank &middot; Contact Center</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <form id="frm" onsubmit="return doLogin(event)">
+    <div class="fgrp">
+      <label class="flbl" for="sel">Your Name</label>
+      <select id="sel" required>
+        <option value="">Loading staff list...</option>
+      </select>
+    </div>
+
+    <div class="fgrp">
+      <label class="flbl">4-Digit PIN</label>
+      <div class="pin-wrap">
+        <div class="pin-box" id="pinBox" onclick="document.getElementById('pin').focus()">
+          <span class="pin-lbl">Tap to enter PIN</span>
+          <div class="pin-dots">
+            <div class="dot" id="d0"></div>
+            <div class="dot" id="d1"></div>
+            <div class="dot" id="d2"></div>
+            <div class="dot" id="d3"></div>
+          </div>
+        </div>
+        <input type="password" id="pin" class="pin-input"
+               inputmode="numeric" pattern="[0-9]*"
+               autocomplete="current-password" maxlength="4">
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit" id="btn">
+      <span class="spin"></span>
+      <span class="btn-txt">Sign In</span>
+    </button>
+
+    <div class="err" id="err"></div>
+  </form>
+
+  <div class="footer">
+    KIB CC <strong>&middot;</strong> Contact Center Tools <strong>&middot;</strong> v2.0
+  </div>
+</div>
+
+<script>
+var N8N = 'https://n8n.kib-cc-wfm.com/webhook/kib';
+var KEY = 'kib_ops_session';
+
+/* Already logged in? */
+(function(){
+  try{
+    var s=JSON.parse(localStorage.getItem(KEY)||'null');
+    if(s && new Date(s.expires_at)>new Date()) location.href='./tasks.html';
+  }catch(e){}
+})();
+
+/* Load users */
+fetch(N8N+'/users-list',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})})
+.then(function(r){return r.json();})
+.then(function(d){
+  var users=(d&&d.data&&d.data.users)?d.data.users:[];
+  users.sort(function(a,b){return a.full_name.localeCompare(b.full_name);});
+  var sel=document.getElementById('sel');
+  sel.innerHTML='<option value="">— Select your name —</option>';
+  users.forEach(function(u){
+    var o=document.createElement('option');
+    o.value=u.user_id;
+    o.textContent=u.full_name+' ('+u.role+')';
+    sel.appendChild(o);
+  });
+})
+.catch(function(){
+  document.getElementById('sel').innerHTML='<option value="">— Could not load users —</option>';
+});
+
+/* PIN dots */
+var pinEl=document.getElementById('pin');
+var pinBox=document.getElementById('pinBox');
+
+pinEl.addEventListener('focus',function(){pinBox.classList.add('focus');});
+pinEl.addEventListener('blur', function(){pinBox.classList.remove('focus');});
+pinEl.addEventListener('input',function(){
+  this.value=this.value.replace(/\D/g,'').slice(0,4);
+  for(var i=0;i<4;i++){
+    document.getElementById('d'+i).className='dot'+(i<this.value.length?' on':'');
+  }
+  /* Auto-try if name selected and 4 digits entered */
+  if(this.value.length===4 && document.getElementById('sel').value){
+    document.getElementById('btn').focus();
+  }
+});
+
+/* Login */
+function doLogin(e){
+  e.preventDefault();
+  var uid=document.getElementById('sel').value;
+  var pin=document.getElementById('pin').value;
+  var btn=document.getElementById('btn');
+  var err=document.getElementById('err');
+
+  if(!uid){showErr('Please select your name.');return false;}
+  if(pin.length!==4){showErr('Please enter your 4-digit PIN.');return false;}
+
+  btn.classList.add('loading');
+  btn.disabled=true;
+  err.classList.remove('show');
+
+  fetch(N8N+'/login',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({user_id:uid,pin:pin})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.success && d.data){
+      localStorage.setItem(KEY,JSON.stringify(d.data));
+      location.href='./tasks.html';
+    }else{
+      throw new Error((d.error&&d.error.message)?d.error.message:d.message||'Login failed');
+    }
+  })
+  .catch(function(ex){
+    var msg=ex.message||'Connection error';
+    if(msg.indexOf('ncorrect')!==-1||msg.indexOf('PIN')!==-1||msg.indexOf('nvalid')!==-1){
+      showErr('Incorrect PIN. Please try again.');
+    }else if(msg.indexOf('etch')!==-1||msg.indexOf('onnect')!==-1||msg.indexOf('network')!==-1){
+      showErr('Connection error — check your internet and try again.');
+    }else{
+      showErr(msg);
+    }
+    btn.classList.remove('loading');
+    btn.disabled=false;
+  });
+  return false;
+}
+
+function showErr(msg){
+  var err=document.getElementById('err');
+  err.textContent=msg;
+  err.classList.add('show');
+}
+</script>
+</body>
+</html>

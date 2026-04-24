@@ -1,48 +1,4 @@
-/*
- * ADC Task Manager — training-form.css
- * Page-specific styles for training-form.html
- * Requires: shared.css loaded first
- * v2.0
- */
-
-.task-hero { padding: 16px 18px; border-radius: 14px; margin-bottom: 14px; }
-  .task-hero-title { font-size: 18px; margin-bottom: 12px; }
-  .task-hero-val   { font-size: 22px; }
-  .task-hero-stats { gap: 14px; }
-  .task-hero-ring  { width: 64px; height: 64px; }
-
-  .board-header { gap: 8px; margin-bottom: 12px; }
-  .board-filters { flex-wrap: nowrap; overflow-x: auto; }
-
-  .mobile-bottom-nav { display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; padding-bottom: env(safe-area-inset-bottom, 8px); }
-
-  #taskModal { padding: 0 !important; align-items: flex-end !important; }
-  #taskModalSheet {
-    width: 100% !important; max-width: 100% !important;
-    height: 92vh !important; border-radius: 18px 18px 0 0 !important;
-    transform: translateY(100%) !important; opacity: 1 !important;
-    transition: transform .3s cubic-bezier(.32,0,.15,1) !important;
-  }
-
-  .k-card-title { font-size: 13px; }
-  .form-row { grid-template-columns: 1fr; }
-  .card-body, .card-head { padding: 12px 14px; }
-}
-
-/* ── DESKTOP ──────────────────────────────────────────────── */
-@media (min-width: 769px) {
-  .mobile-bottom-nav { display: none !important; }
-  .sidebar { transform: none !important; display: flex !important; position: fixed !important; }
-  .sb-toggle, .sidebar-toggle { display: none !important; }
-  .layout-main, .main-content { margin-left: var(--sb-width) !important; }
-  #taskModal { align-items: center !important; padding: 20px !important; }
-  #taskModalSheet {
-    width: 100% !important; max-width: 860px !important;
-    height: 88vh !important; border-radius: var(--r-lg) !important;
-  }
-}
-
-
+/* training-form.css — from V1 */
 
 /* ── TRAINING FORM PAGE ── */
 .target-tabs { display:flex; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-md); padding:3px; margin-bottom:16px; }
@@ -186,3 +142,4 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+

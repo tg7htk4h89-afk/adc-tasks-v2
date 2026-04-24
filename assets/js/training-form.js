@@ -1,9 +1,30 @@
-/*
- * ADC Task Manager — training-form.js
- * Page-specific logic for training-form.html
- * Requires: auth.js loaded first
- * v2.0
- */
+/* ADC Task Manager v2 — training-form.js */
+
+
+// V2 init
+document.addEventListener('DOMContentLoaded', function(){
+  AUTH.need();
+  var sess = AUTH.get();
+  initSB();
+  U.set('sbUname', sess.display_name||sess.full_name.split(' ')[0]);
+  U.set('sbUrole', sess.role);
+  U.set('sbAvTxt', U.ini(sess.full_name));
+  API.get('users_list',{}).then(function(d){
+    var users = d.users||[];
+    populateMultiAgents(users);
+    populateTrainers(users);
+    populateSingleAgent(users);
+    populateTeamTLs(users);
+  }).catch(function(){});
+});
+
+function setTargetType(type){
+  currentTargetType = type;
+  ['individual','multiple','team','department'].forEach(function(t){
+    document.getElementById('panel-'+t).style.display = t===type ? '' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('active', t===type);
+  });
+}
 
 async function submitTraining(){
   var title    = document.getElementById('fTitle').value.trim();
@@ -55,7 +76,7 @@ async function submitTraining(){
       total_agents:           String(targetAgents.length)
     });
     showMsg('Training plan created! ID: '+d.training_id,'success');
-    setTimeout(function(){location.href='/training.html';},1500);
+    setTimeout(function(){location.href='./training.html';},1500);
   }catch(ex){
     showMsg('Error: '+ex.message,'error');
     btn.disabled=false;btn.textContent='Create Training Plan';
@@ -88,43 +109,3 @@ function unlockBodyScroll() {
   if (mc) mc.scrollTop = _scrollY;
 }
 // ── END MOBILE SCROLL ──────────────────────────────────────
-
-
-
-// ── MOBILE MORE SHEET ─────────────────────────────────────
-function toggleMobileMore(){
-  var sheet=document.getElementById('mobileMoreSheet');
-  var isOpen=sheet&&sheet.style.transform==='translateY(0px)';
-  isOpen?closeMobileMore():openMobileMore();
-}
-function openMobileMore(){
-  var sheet=document.getElementById('mobileMoreSheet');
-  var overlay=document.getElementById('mobileMoreOverlay');
-  var btn=document.getElementById('btnMobileMore');
-  if(!sheet)return;
-  sheet.style.display='block';
-  if(overlay)overlay.style.display='block';
-  if(btn)btn.classList.add('active');
-  requestAnimationFrame(function(){
-    requestAnimationFrame(function(){sheet.style.transform='translateY(0px)';});
-  });
-  var s=AUTH&&AUTH.getSession?AUTH.getSession():{};
-  if(s&&s.full_name){
-    var ini=s.full_name.split(' ').map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase();
-    var av=document.getElementById('moreAvatar');if(av)av.textContent=ini;
-    var nm=document.getElementById('moreName');if(nm)nm.textContent=s.full_name;
-    var rl=document.getElementById('moreRole');if(rl)rl.textContent=s.role||'';
-    var dp=document.getElementById('moreDept');if(dp)dp.textContent=s.department||'KIB';
-  }
-}
-function closeMobileMore(){
-  var sheet=document.getElementById('mobileMoreSheet');
-  var overlay=document.getElementById('mobileMoreOverlay');
-  var btn=document.getElementById('btnMobileMore');
-  if(sheet)sheet.style.transform='translateY(100%)';
-  if(btn)btn.classList.remove('active');
-  setTimeout(function(){
-    if(sheet)sheet.style.display='none';
-    if(overlay)overlay.style.display='none';
-  },280);
-}

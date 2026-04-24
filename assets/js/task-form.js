@@ -1,16 +1,27 @@
-/*
- * ADC Task Manager — task-form.js
- * Requires: auth.js
- */
+/* ADC Task Manager v2 — task-form.js */
 
-UTILS.setUser(AUTH.getSession());
 
-// Sidebar
-var _sb=document.getElementById('sidebar'),_ov=document.getElementById('sidebarOverlay');
-if(document.getElementById('sidebarToggle'))document.getElementById('sidebarToggle').addEventListener('click',function(){_sb.classList.toggle('open');if(_ov)_ov.style.display=_sb.classList.contains('open')?'block':'none';});
-if(_ov)_ov.addEventListener('click',function(){_sb.classList.remove('open');_ov.style.display='none';});
+// V2 init
+document.addEventListener('DOMContentLoaded', function(){
+  AUTH.need();
+  var sess = AUTH.get();
+  initSB();
+  U.set('sbUname', sess.display_name||sess.full_name.split(' ')[0]);
+  U.set('sbUrole', sess.role);
+  U.set('sbAvTxt', U.ini(sess.full_name));
 
-// ── TAB SWITCHING ─────────────────────────────────────────────────
+  // Set min date/time
+  var now = new Date();
+  var dtEl = document.getElementById('taskDueDate');
+  if(dtEl){ now.setHours(now.getHours()+1); dtEl.min=now.toISOString().slice(0,16); }
+
+  // Load users
+  API.get('users_list',{}).then(function(d){
+    allUsers = d.users||[];
+    renderAssigneeList('');
+  }).catch(function(){});
+});
+
 function switchFTab(btn){
   var panels={'ftab-details':'fpanel-details','ftab-assignees':'fpanel-assignees','ftab-subtasks':'fpanel-subtasks','ftab-recurring':'fpanel-recurring'};
   Object.keys(panels).forEach(function(tid){
