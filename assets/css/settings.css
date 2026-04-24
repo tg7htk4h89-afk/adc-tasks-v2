@@ -1,0 +1,186 @@
+/*
+ * ADC Task Manager — settings.css
+ * Page-specific styles for settings.html
+ * Requires: shared.css loaded first
+ * v2.0
+ */
+
+.task-hero { padding: 16px 18px; border-radius: 14px; margin-bottom: 14px; }
+  .task-hero-title { font-size: 18px; margin-bottom: 12px; }
+  .task-hero-val   { font-size: 22px; }
+  .task-hero-stats { gap: 14px; }
+  .task-hero-ring  { width: 64px; height: 64px; }
+
+  .board-header { gap: 8px; margin-bottom: 12px; }
+  .board-filters { flex-wrap: nowrap; overflow-x: auto; }
+
+  .mobile-bottom-nav { display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; padding-bottom: env(safe-area-inset-bottom, 8px); }
+
+  #taskModal { padding: 0 !important; align-items: flex-end !important; }
+  #taskModalSheet {
+    width: 100% !important; max-width: 100% !important;
+    height: 92vh !important; border-radius: 18px 18px 0 0 !important;
+    transform: translateY(100%) !important; opacity: 1 !important;
+    transition: transform .3s cubic-bezier(.32,0,.15,1) !important;
+  }
+
+  .k-card-title { font-size: 13px; }
+  .form-row { grid-template-columns: 1fr; }
+  .card-body, .card-head { padding: 12px 14px; }
+}
+
+/* ── DESKTOP ──────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .mobile-bottom-nav { display: none !important; }
+  .sidebar { transform: none !important; display: flex !important; position: fixed !important; }
+  .sb-toggle, .sidebar-toggle { display: none !important; }
+  .layout-main, .main-content { margin-left: var(--sb-width) !important; }
+  #taskModal { align-items: center !important; padding: 20px !important; }
+  #taskModalSheet {
+    width: 100% !important; max-width: 860px !important;
+    height: 88vh !important; border-radius: var(--r-lg) !important;
+  }
+}
+
+
+
+/* ── SETTINGS PAGE ── */
+.settings-hero {
+  background: linear-gradient(135deg, var(--navy-2) 0%, var(--blue-2) 60%, var(--blue) 100%);
+  border-radius: 18px; padding: 22px 24px; margin-bottom: 18px;
+  position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(13,27,62,.2);
+}
+.settings-section {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r-lg); padding:18px; margin-bottom:14px;
+  box-shadow:var(--sh-sm);
+}
+.settings-title { font-size:13px; font-weight:700; color:var(--t1); margin-bottom:4px; }
+.settings-sub   { font-size:11px; color:var(--t3); margin-bottom:16px; }
+.settings-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 0; border-bottom:1px solid var(--border); gap:14px;
+}
+.settings-row:last-child { border-bottom:none; padding-bottom:0; }
+.settings-lbl   { font-size:12.5px; font-weight:600; color:var(--t1); }
+.settings-meta  { font-size:11px; color:var(--t3); margin-top:2px; }
+.settings-val   { font-size:13px; font-weight:700; color:var(--blue); }
+
+
+
+
+
+/* ══════════════════════════════════════════════════════════
+   LAYOUT MASTER — authoritative, no conflicts
+   All pages: nav.sidebar + main.main-content structure
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { 
+  margin: 0; padding: 0; min-height: 100vh;
+  overflow-x: hidden; background: var(--bg);
+}
+
+/* ── Sidebar: fixed on desktop ── */
+.sidebar {
+  position: fixed !important;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sb-width, 220px);
+  z-index: 200;
+  overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ── Main content: offset by sidebar ── */
+.main-content {
+  margin-left: var(--sb-width, 220px);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Top bar: sticky within main-content ── */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  flex-shrink: 0;
+}
+
+/* ── Page content: scrollable area ── */
+.page-content { 
+  flex: 1; 
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+/* ── Desktop extras ── */
+@media (min-width: 769px) {
+  .sidebar { transform: none !important; }
+  .sidebar-toggle, .sb-toggle { display: none !important; }
+  .mobile-bottom-nav { display: none !important; }
+  #sidebarOverlay { display: none !important; }
+  .layout-main { margin-left: 0 !important; } /* legacy class, no longer used */
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform .28s ease;
+    z-index: 500;
+    width: min(80vw, 280px) !important;
+  }
+  .sidebar.open {
+    transform: translateX(0) !important;
+    box-shadow: 8px 0 32px rgba(0,0,0,.4);
+  }
+  
+  .main-content { 
+    margin-left: 0 !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  
+  .page-content {
+    padding: 12px 12px calc(70px + env(safe-area-inset-bottom, 8px)) !important;
+    overflow-x: hidden;
+  }
+  
+  .top-bar { padding: 0 12px !important; height: 52px !important; }
+  
+  .sidebar-toggle, .sb-toggle { display: flex !important; }
+  .mobile-bottom-nav { 
+    display: flex !important;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 300;
+    padding-bottom: env(safe-area-inset-bottom, 6px);
+  }
+  
+  /* Task modal: full-width bottom sheet on mobile */
+  #taskModal {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  #taskModalSheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    height: 92vh !important;
+  }
+  
+  /* Kanban: horizontal scroll */
+  .kanban-scroll, #kanbanBoard {
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .kanban-scroll::-webkit-scrollbar,
+  #kanbanBoard::-webkit-scrollbar { display: none; }
+  
+  /* Grids → single column */
+  .form-row, .form-grid, .form-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}

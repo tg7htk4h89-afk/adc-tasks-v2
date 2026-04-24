@@ -1,0 +1,230 @@
+/*
+ * ADC Task Manager — archive.css
+ * Page-specific styles for tasks-archive.html
+ * Requires: shared.css loaded first
+ * v2.0
+ */
+
+.task-hero { padding: 16px 18px; border-radius: 14px; margin-bottom: 14px; }
+  .task-hero-title { font-size: 18px; margin-bottom: 12px; }
+  .task-hero-val   { font-size: 22px; }
+  .task-hero-stats { gap: 14px; }
+  .task-hero-ring  { width: 64px; height: 64px; }
+
+  .board-header { gap: 8px; margin-bottom: 12px; }
+  .board-filters { flex-wrap: nowrap; overflow-x: auto; }
+
+  .mobile-bottom-nav { display: flex !important; position: fixed; bottom: 0; left: 0; right: 0; z-index: 300; padding-bottom: env(safe-area-inset-bottom, 8px); }
+
+  #taskModal { padding: 0 !important; align-items: flex-end !important; }
+  #taskModalSheet {
+    width: 100% !important; max-width: 100% !important;
+    height: 92vh !important; border-radius: 18px 18px 0 0 !important;
+    transform: translateY(100%) !important; opacity: 1 !important;
+    transition: transform .3s cubic-bezier(.32,0,.15,1) !important;
+  }
+
+  .k-card-title { font-size: 13px; }
+  .form-row { grid-template-columns: 1fr; }
+  .card-body, .card-head { padding: 12px 14px; }
+}
+
+/* ── DESKTOP ──────────────────────────────────────────────── */
+@media (min-width: 769px) {
+  .mobile-bottom-nav { display: none !important; }
+  .sidebar { transform: none !important; display: flex !important; position: fixed !important; }
+  .sb-toggle, .sidebar-toggle { display: none !important; }
+  .layout-main, .main-content { margin-left: var(--sb-width) !important; }
+  #taskModal { align-items: center !important; padding: 20px !important; }
+  #taskModalSheet {
+    width: 100% !important; max-width: 860px !important;
+    height: 88vh !important; border-radius: var(--r-lg) !important;
+  }
+}
+
+
+
+/* ── ARCHIVE PAGE ── */
+.arch-hero {
+  background: linear-gradient(135deg, var(--navy-2) 0%, var(--blue-2) 60%, var(--blue) 100%);
+  border-radius: 18px; padding: 22px 24px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 20px;
+  position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(13,27,62,.2);
+}
+.arch-hero::before { content:''; position:absolute; top:-60px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,.05); pointer-events:none; }
+
+.filter-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; margin-bottom:14px; box-shadow:var(--sh-sm); }
+.filter-row  { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+
+.arch-card {
+  background:var(--card); border:1px solid var(--border);
+  border-radius:var(--r-md); padding:14px 16px; margin-bottom:8px;
+  box-shadow:var(--sh-sm); transition:box-shadow .15s;
+}
+.arch-card:hover { box-shadow:var(--sh-md); }
+.arch-card-title  { font-size:13px; font-weight:700; color:var(--t1); margin-bottom:3px; }
+.arch-card-id     { font-size:9px; color:var(--t4); margin-bottom:8px; }
+.arch-card-row    { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.arch-card-bottom { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--t2); padding-top:10px; border-top:1px solid var(--border); }
+
+.arch-table-wrap  { background:var(--card); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--sh-sm); }
+.pagination { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; border-top:1px solid var(--border); flex-wrap:wrap; gap:8px; }
+.pag-info { font-size:11px; color:var(--t3); }
+.pag-btns { display:flex; gap:4px; }
+.pag-btn  { width:30px; height:30px; border-radius:var(--r-sm); border:1px solid var(--border); background:var(--card); color:var(--t2); font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; font-family:var(--font); transition:all .15s; }
+.pag-btn:hover { background:var(--bg); }
+.pag-btn.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+.pag-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+@media (max-width: 768px) {
+  .arch-table-wrap { display:none !important; }
+  #archCards { display:flex !important; flex-direction:column; }
+}
+@media (min-width: 769px) {
+  #archCards { display:none !important; }
+  .arch-table-wrap { display:block !important; }
+}
+
+
+
+/* ── ARCHIVE: Missing CSS ── */
+#filterToolbar {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-lg); padding: 14px 18px;
+  margin-bottom: 14px; box-shadow: var(--sh-sm);
+}
+.tableCount { font-size: 12px; font-weight: 600; color: var(--t2); }
+#paginationWrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 18px; border-top: 1px solid var(--border);
+  flex-wrap: wrap; gap: 8px;
+}
+.pag-info { font-size: 11px; color: var(--t3); }
+.pag-btns { display: flex; gap: 4px; }
+.pag-btn {
+  width: 30px; height: 30px; border-radius: var(--r-sm);
+  border: 1px solid var(--border); background: var(--card);
+  color: var(--t2); font-size: 12px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font); transition: all .15s;
+}
+.pag-btn:hover:not(:disabled) { background: var(--bg); border-color: var(--border-2); }
+.pag-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.pag-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+
+
+/* ══════════════════════════════════════════════════════════
+   LAYOUT MASTER — authoritative, no conflicts
+   All pages: nav.sidebar + main.main-content structure
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Base reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: hidden; }
+body { 
+  margin: 0; padding: 0; min-height: 100vh;
+  overflow-x: hidden; background: var(--bg);
+}
+
+/* ── Sidebar: fixed on desktop ── */
+.sidebar {
+  position: fixed !important;
+  left: 0; top: 0; bottom: 0;
+  width: var(--sb-width, 220px);
+  z-index: 200;
+  overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column;
+}
+
+/* ── Main content: offset by sidebar ── */
+.main-content {
+  margin-left: var(--sb-width, 220px);
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* ── Top bar: sticky within main-content ── */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  flex-shrink: 0;
+}
+
+/* ── Page content: scrollable area ── */
+.page-content { 
+  flex: 1; 
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+/* ── Desktop extras ── */
+@media (min-width: 769px) {
+  .sidebar { transform: none !important; }
+  .sidebar-toggle, .sb-toggle { display: none !important; }
+  .mobile-bottom-nav { display: none !important; }
+  #sidebarOverlay { display: none !important; }
+  .layout-main { margin-left: 0 !important; } /* legacy class, no longer used */
+}
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%) !important;
+    transition: transform .28s ease;
+    z-index: 500;
+    width: min(80vw, 280px) !important;
+  }
+  .sidebar.open {
+    transform: translateX(0) !important;
+    box-shadow: 8px 0 32px rgba(0,0,0,.4);
+  }
+  
+  .main-content { 
+    margin-left: 0 !important;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  
+  .page-content {
+    padding: 12px 12px calc(70px + env(safe-area-inset-bottom, 8px)) !important;
+    overflow-x: hidden;
+  }
+  
+  .top-bar { padding: 0 12px !important; height: 52px !important; }
+  
+  .sidebar-toggle, .sb-toggle { display: flex !important; }
+  .mobile-bottom-nav { 
+    display: flex !important;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 300;
+    padding-bottom: env(safe-area-inset-bottom, 6px);
+  }
+  
+  /* Task modal: full-width bottom sheet on mobile */
+  #taskModal {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  #taskModalSheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 18px 18px 0 0 !important;
+    height: 92vh !important;
+  }
+  
+  /* Kanban: horizontal scroll */
+  .kanban-scroll, #kanbanBoard {
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .kanban-scroll::-webkit-scrollbar,
+  #kanbanBoard::-webkit-scrollbar { display: none; }
+  
+  /* Grids → single column */
+  .form-row, .form-grid, .form-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+}

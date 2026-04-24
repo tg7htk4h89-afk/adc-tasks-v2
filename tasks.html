@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Tasks — ADC Task Manager</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/shared.css">
+  <link rel="stylesheet" href="/assets/css/tasks.css">
+</head>
+<body>
+
+<div id="sidebarOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:190" onclick="document.getElementById('sidebar').classList.remove('open');this.style.display='none'"></div>
+
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logomark">KIB</div>
+    <div class="sidebar-title">ADC Task Manager</div>
+    <div class="sidebar-sub">Kuwait International Bank</div>
+  </div>
+  <div class="sidebar-nav"><div class='nav-section'>Main</div><a href="/tasks.html" class="nav-item active"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Tasks</a><a href="/tasks-archive.html" class="nav-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Task Archive</a><a href="/todo.html" class="nav-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg>My To-Do</a><a href="/training.html" class="nav-item"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Training</a><div class='nav-section'>System</div><a href="/settings.html" class="nav-item" data-roles="HoD"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>Settings</a></div>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="avatarInitials">?</div>
+      <div><div class="user-name" id="sidebarName">...</div><div class="user-role" id="sidebarRole"></div></div>
+      <button class="btn-logout" onclick="AUTH.logout()"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+    </div>
+  </div>
+</nav>
+
+<main class="main-content">
+  <header class="top-bar">
+    <button id="sidebarToggle" class="sb-toggle" aria-label="Menu">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div style="display:flex;flex-direction:column;flex:1;min-width:0">
+      <span class="breadcrumb">Tasks</span>
+      <span style="font-size:10px;font-weight:600;color:#8A9BB0;letter-spacing:.3px">ADC Task Manager</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-left:auto">
+      <button onclick="refreshTasks()" title="Refresh" style="background:none;border:none;cursor:pointer;color:var(--t3);padding:6px;border-radius:8px;display:flex;align-items:center;transition:background .2s" onmouseenter="this.style.background='#F1F5F9'" onmouseleave="this.style.background='none'">
+        <svg id="refreshIcon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="content-wrap">
+    <div class="page-content">
+
+      <!-- Hero Dashboard Card -->
+      <div class="task-hero">
+        <div class="task-hero-body">
+          <div class="task-hero-tag">Task Management</div>
+          <div class="task-hero-title" id="heroTitle">Task Board</div>
+          <div class="task-hero-stats">
+            <div class="task-hero-stat">
+              <div class="task-hero-val" id="kT">—</div>
+              <div class="task-hero-lbl">Total</div>
+            </div>
+            <div class="task-hero-stat">
+              <div class="task-hero-val" id="kO">—</div>
+              <div class="task-hero-lbl">Open</div>
+            </div>
+            <div class="task-hero-stat" id="kVWrap">
+              <div class="task-hero-val" id="kV" style="color:#FCA5A5">—</div>
+              <div class="task-hero-lbl">Overdue</div>
+            </div>
+            <div class="task-hero-stat">
+              <div class="task-hero-val" id="kD" style="color:#6EE7B7">—</div>
+              <div class="task-hero-lbl">Done</div>
+            </div>
+          </div>
+        </div>
+        <!-- Progress ring -->
+        <div class="task-hero-ring">
+          <svg viewBox="0 0 80 80" width="80" height="80">
+            <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="6"/>
+            <circle id="heroRingFill" cx="40" cy="40" r="32" fill="none" stroke="#fff" stroke-width="6"
+              stroke-dasharray="201" stroke-dashoffset="201"
+              stroke-linecap="round" transform="rotate(-90 40 40)"
+              style="transition:stroke-dashoffset .6s ease"/>
+            <text x="40" y="45" text-anchor="middle" font-size="13" font-weight="800" fill="#fff" id="heroRingPct">—</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filters + New Task -->
+      <div class="board-filters">
+        <div class="filter-row">
+          <button class="f-pill on" onclick="setFilter('all',this)">All</button>
+          <button class="f-pill" onclick="setFilter('mine',this)">Mine</button>
+          <button class="f-pill" onclick="setFilter('overdue',this)">Overdue</button>
+        </div>
+        <button class="btn-new" id="btnNew" style="display:none" onclick="openNewTaskModal()">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Task
+        </button>
+      </div>
+
+      <!-- Kanban board -->
+      <div class="kanban-board">
+        <div class="kanban-scroll" id="kanbanBoard">
+          <div style="padding:40px;text-align:center;width:100%">
+            <div class="k-spinner"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<nav class="mobile-bottom-nav" id="mobileBottomNav">
+  <a href="/tasks.html" class="mbn-item">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    <span>Tasks</span>
+  </a>
+  <a href="/tasks-archive.html" class="mbn-item" data-page="archive">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+    <span>Archive</span>
+  </a>
+  <a href="/todo.html" class="mbn-item" data-page="todo">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    <span>To-Do</span>
+  </a>
+  <button class="mbn-item mbn-more" onclick="toggleMobileMore()" id="btnMobileMore">
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    <span>More</span>
+  </button>
+</nav>
+
+<script src="/assets/js/auth.js"></script>
+<script src="/assets/js/tasks.js"></script>
+</body>
+</html>
