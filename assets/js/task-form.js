@@ -114,42 +114,57 @@ function updateRecPreview(){
 }
 
 /* SUBMIT */
+function showFormErr(msg, tab){
+  var el = U.el('formErr');
+  if(el){ el.textContent = msg; el.style.display = 'block'; el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  U.toast(msg, 'error');
+  if(tab) goTab(tab);
+}
+function clearFormErr(){
+  var el = U.el('formErr'); if(el) el.style.display = 'none';
+}
+
 async function submitTask(){
+  clearFormErr();
   var title=(U.el('fTitle')?U.el('fTitle').value.trim():'');
   var cat  =(U.el('fCat')  ?U.el('fCat').value:'');
   var pri  =(U.el('fPri')  ?U.el('fPri').value:'');
   var sv   =(U.el('fSV')   ?U.el('fSV').value:'');
 
-  if(!title){U.toast('Please enter a task title','error');goTab('det');return;}
-  if(!cat)  {U.toast('Please select a category','error');goTab('det');return;}
-  if(!pri)  {U.toast('Please select a priority','error');goTab('det');return;}
-  if(!sv)   {U.toast('Please enter an SLA value','error');goTab('det');return;}
-  if(!_assignees.length){U.toast('Please select at least one assignee','error');goTab('asg');return;}
+  if(!title){showFormErr('Please enter a task title','det');return;}
+  if(!cat)  {showFormErr('Please select a category','det');return;}
+  if(!pri)  {showFormErr('Please select a priority','det');return;}
+  if(!sv)   {showFormErr('Please enter an SLA value','det');return;}
+  if(!_assignees.length){showFormErr('Please select at least one assignee','asg');return;}
 
-  var recOn=U.el('recToggle')&&U.el('recToggle').checked;
-  if(recOn&&!_recType){U.toast('Please select a recurring frequency','error');goTab('rec');return;}
+  var recOn = U.el('recToggle') && U.el('recToggle').checked;
+  if(recOn && !_recType){ showFormErr('Please select a recurring frequency','rec'); return; }
 
-  var btn=U.el('submitBtn');
-  if(btn){btn.disabled=true;btn.textContent='Creating...';}
+  var btn = U.el('submitBtn');
+  if(btn){ btn.disabled=true; btn.textContent='Creating...'; }
 
   try{
     await API.post('tasks_create',{
       title:          title,
-      description:    U.el('fDesc')?U.el('fDesc').value:'',
+      description:    U.el('fDesc') ? U.el('fDesc').value : '',
       category:       cat,
       priority:       pri,
-      due_date:       U.el('fDue')?U.el('fDue').value||'':'',
+      due_date:       U.el('fDue') ? U.el('fDue').value||'' : '',
       sla_value:      sv,
-      sla_unit:       U.el('fSU')?U.el('fSU').value:'hours',
+      sla_unit:       U.el('fSU') ? U.el('fSU').value : 'hours',
       assignees:      _assignees,
       subtasks:       _subtasks,
-      recurring_flag: recOn?'TRUE':'FALSE',
-      recurring_type: _recType||''
+      recurring_flag: recOn ? 'TRUE' : 'FALSE',
+      recurring_type: _recType || ''
     });
-    U.toast('Task created!','success');
-    setTimeout(function(){location.href='./tasks.html';},1200);
+    // Success
+    var err = U.el('formErr'); if(err) err.style.display='none';
+    var btn2 = U.el('submitBtn');
+    if(btn2){ btn2.textContent='✓ Created!'; btn2.style.background='var(--green)'; }
+    U.toast('Task created successfully!','success');
+    setTimeout(function(){ location.href='./tasks.html'; }, 1500);
   }catch(ex){
-    U.toast('Error: '+ex.message,'error');
-    if(btn){btn.disabled=false;btn.textContent='✓ Create Task';}
+    showFormErr('Error creating task: '+ex.message);
+    if(btn){ btn.disabled=false; btn.textContent='✓ Create Task'; }
   }
 }

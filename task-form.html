@@ -196,9 +196,18 @@
           </div>
           <div class="tf-nav">
             <button class="btn-back" onclick="goTab('sub')">&#8592; Back</button>
-            <button class="btn-create" id="submitBtn" onclick="submitTask()">&#10003; Create Task</button>
           </div>
         </div>
+
+
+      <!-- Error message -->
+      <div id="formErr" style="display:none;margin-top:14px;padding:12px 16px;background:var(--rdim);border:1px solid rgba(229,56,59,.25);border-radius:var(--r2);font-size:13px;color:#991B1B;font-weight:600"></div>
+
+      <!-- Always-visible submit -->
+      <div style="margin-top:20px;padding-top:16px;border-top:2px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="font-size:12px;color:var(--t3)">Fill all required fields then submit</div>
+        <button class="btn-create" id="submitBtn" onclick="submitTask()">&#10003; Create Task</button>
+      </div>
 
       </div>
     </div>

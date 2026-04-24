@@ -167,10 +167,17 @@ function showMsg(text, type){
   var m = U.el('msg'); if(!m) return;
   m.textContent = text;
   m.className = 'trf-msg ' + type;
+  m.style.display = 'block';
+  m.scrollIntoView({behavior:'smooth', block:'center'});
+  if(type === 'error') U.toast(text, 'error');
+}
+function clearMsg(){
+  var m = U.el('msg'); if(m){ m.className='trf-msg'; m.style.display='none'; }
 }
 
 /* ── SUBMIT ── */
 async function submitTraining(){
+  clearMsg();
   var title    = U.el('fTitle')    ? U.el('fTitle').value.trim()    : '';
   var cat      = U.el('fCat')      ? U.el('fCat').value             : '';
   var deadline = U.el('fDeadline') ? U.el('fDeadline').value        : '';
