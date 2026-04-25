@@ -198,22 +198,38 @@ function closeTask(){
 
 function renderHead(t){
   var head=U.el('tHead'); if(!head) return;
-  var an=t.assigned_to_name&&t.assigned_to_name!=='undefined'?t.assigned_to_name:null;
+  var pct=Math.min(100,t.progress_pct||0);
+  var pc=pct>=100?'#6EE7B7':'#93C5FD';
+  var btns=[0,25,50,75,100].map(function(v){
+    var on=Math.round(pct)===v;
+    return '<button onclick="quickProgress('+v+')" class="qp-btn'+(on?' qp-on':'')+'" data-v="'+v+'">'+v+'%</button>';
+  }).join('');
   head.innerHTML=
-    '<div style="background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);padding:20px 22px;position:relative;overflow:hidden">'+
+    '<div style="background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);padding:18px 20px 0;position:relative;overflow:hidden">'+
       '<div style="position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05)"></div>'+
       '<div style="position:relative;z-index:1">'+
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">'+
-          '<span class="badge '+(BADGE_CLS[t.status]||'b-can')+'">'+U.esc(t.status)+'</span>'+
-          '<span class="badge" style="background:rgba(255,255,255,.15);color:#fff">'+U.esc(t.priority||'')+'</span>'+
-          (t.delegated_flag?'<span class="badge" style="background:rgba(123,97,255,.3);color:#C4B5FD">Delegated</span>':'')+
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
+            '<span class="badge '+(BADGE_CLS[t.status]||'b-can')+'">'+U.esc(t.status)+'</span>'+
+            '<span class="badge" style="background:rgba(255,255,255,.15);color:#fff">'+U.esc(t.priority||'')+'</span>'+
+            (t.delegated_flag?'<span class="badge" style="background:rgba(123,97,255,.3);color:#C4B5FD">Delegated</span>':'')+
+          '</div>'+
+          '<button onclick="closeTask()" style="background:rgba(255,255,255,.12);border:none;border-radius:50%;width:30px;height:30px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s">&#x2715;</button>'+
         '</div>'+
-        '<div style="font-size:18px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:8px">'+U.esc(t.title)+'</div>'+
-        '<div style="display:flex;align-items:center;gap:16px;font-size:11px;color:rgba(255,255,255,.5)">'+
+        '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:6px">'+U.esc(t.title)+'</div>'+
+        '<div style="display:flex;align-items:center;gap:14px;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px">'+
           (t.category?'<span>'+U.esc(t.category)+'</span>':'')+
-          (t.due_date?'<span>Due '+U.date(t.due_datetime||t.due_date)+'</span>':'')+
+          (t.due_datetime||t.due_date?'<span>Due '+U.date(t.due_datetime||t.due_date)+'</span>':'')+
           '<span>SLA '+Math.round(t.sla_pct||0)+'%</span>'+
         '</div>'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'+
+          '<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px">Progress</span>'+
+          '<span id="hPctLbl" style="font-size:13px;font-weight:800;color:'+pc+'">'+pct+'%</span>'+
+        '</div>'+
+        '<div style="height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:10px">'+
+          '<div id="hPctBar" style="height:100%;width:'+pct+'%;background:'+pc+';border-radius:4px;transition:width .4s"></div>'+
+        '</div>'+
+        '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">'+btns+'</div>'+
       '</div>'+
     '</div>'+
     '<div class="tabs" id="tTabs">'+
@@ -222,7 +238,38 @@ function renderHead(t){
       '<button class="tab" onclick="switchTab(\'cmt\',this)">Comments</button>'+
       '<button class="tab" onclick="switchTab(\'ext\',this)">Extension</button>'+
       '<button class="tab" onclick="switchTab(\'act\',this)">Activity</button>'+
-    '</div>';
+    '</div>'+
+    '<style>'+
+      '.qp-btn{padding:4px 11px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}'+
+      '.qp-btn:hover,.qp-btn.qp-on{border-color:#93C5FD;background:rgba(147,197,253,.2);color:#93C5FD}'+
+    '</style>';
+}
+
+
+function quickProgress(pct){
+  if(!_cur) return;
+  // Update UI immediately
+  var bar=U.el('hPctBar'), lbl=U.el('hPctLbl');
+  var c=pct>=100?'#6EE7B7':'#93C5FD';
+  if(bar){bar.style.width=pct+'%';bar.style.background=c;}
+  if(lbl){lbl.textContent=pct+'%';lbl.style.color=c;}
+  // Update buttons
+  document.querySelectorAll('[onclick^="quickProgress"]').forEach(function(b){
+    var v=parseInt(b.getAttribute('onclick').replace('quickProgress(','').replace(')',''));
+    var active=v===pct;
+    b.style.borderColor=active?'#93C5FD':'rgba(255,255,255,.2)';
+    b.style.background=active?'rgba(147,197,253,.2)':'transparent';
+    b.style.color=active?'#93C5FD':'rgba(255,255,255,.5)';
+  });
+  // Also update slider in Details tab if visible
+  var sl=U.el('pSlider');if(sl)sl.value=pct;
+  var lbl2=U.el('pctLbl');if(lbl2)lbl2.textContent=pct+'%';
+  var fill=U.el('pFill');if(fill)fill.style.width=pct+'%';
+  // Save to API
+  var status=pct===100?'Completed':_cur.task.status;
+  API.post('tasks_update',{task_id:_cur.task.task_id,progress_pct:pct,status:status})
+    .then(function(){U.toast(pct===100?'Task completed!':'Progress saved','success');if(pct===100){closeTask();load();}})
+    .catch(function(ex){U.toast(ex.message,'error');});
 }
 
 function switchTab(id,el){
