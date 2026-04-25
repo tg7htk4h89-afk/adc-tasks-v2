@@ -79,8 +79,8 @@
 </div>
 
 <!-- Task detail modal -->
-<div id="tModal" onclick="if(event.target===this)closeTask()" style="position:fixed;inset:0;background:rgba(10,22,40,.55);backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:300;padding:0">
-  <div id="tSheet" style="background:var(--card);border-radius:18px 18px 0 0;width:100%;max-width:860px;height:92vh;display:flex;flex-direction:column;box-shadow:var(--s3);overflow:hidden;transform:translateY(0);opacity:1">
+<div id="tModal" onclick="if(event.target===this)closeTask()" style="position:fixed;inset:0;background:rgba(10,22,40,.55);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;z-index:300;padding:20px">
+  <div id="tSheet" style="background:var(--card);border-radius:16px;width:100%;max-width:860px;height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(10,22,40,.25);overflow:hidden">
     <div id="tHead" style="flex-shrink:0;overflow:hidden"></div>
     <div id="tBody" style="overflow-y:auto;flex:1;min-height:0;padding-bottom:20px;-webkit-overflow-scrolling:touch"></div>
   </div>

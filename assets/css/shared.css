@@ -378,10 +378,10 @@ tbody td{padding:11px 14px;font-size:12.5px;color:var(--t2);vertical-align:middl
   }
   .kb-scroll::-webkit-scrollbar{display:none}
   .kb-col{min-width:88vw!important;max-width:88vw!important;scroll-snap-align:start}
-  #tModal{padding:0!important;align-items:flex-end!important}
+  #tModal{padding:12px!important;align-items:center!important}
   #tSheet{
-    width:100%!important;max-width:100%!important;height:92vh!important;
-    border-radius:18px 18px 0 0!important
+    width:100%!important;max-width:calc(100vw - 24px)!important;height:88vh!important;
+    border-radius:16px!important
   }
   .frow{grid-template-columns:1fr!important}
 }
