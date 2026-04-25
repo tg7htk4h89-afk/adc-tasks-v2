@@ -272,7 +272,6 @@ tbody td{padding:11px 14px;font-size:12.5px;color:var(--t2);vertical-align:middl
 #tSheet{
   background:var(--card);border-radius:var(--r3);width:100%;max-width:860px;
   height:88vh;display:flex;flex-direction:column;box-shadow:var(--s3);overflow:hidden;
-  transform:scale(.97) translateY(10px);opacity:0;
   transition:transform .28s cubic-bezier(.32,0,.15,1),opacity .25s
 }
 #tHead{flex-shrink:0;overflow:hidden}
