@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KIB Branches — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #060F24; --navy-2: #0D1B3E;
+  --blue: #1877C5; --blue-dim: rgba(24,119,197,0.12);
+  --green: #0EA472; --red: #E5383B; --red-dim: #FEE8E8;
+  --bg: #F0F4F9; --card: #FFFFFF;
+  --border: #E4EAF3; --border-2: #D0D9E8;
+  --t1: #0A1628; --t2: #4A5568; --t3: #8A9BB0;
+  --font: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --r-md: 10px; --r-lg: 14px;
+  --sh-lg: 0 12px 32px rgba(10,22,40,0.12), 0 4px 8px rgba(10,22,40,0.06);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 13px; }
+body {
+  font-family: var(--font); background: var(--bg); color: var(--t1);
+  line-height: 1.5; min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; -webkit-font-smoothing: antialiased;
+  position: relative; overflow: hidden;
+}
+body::before {
+  content: ''; position: fixed; inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(24,119,197,0.08) 0%, transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(13,27,62,0.06) 0%, transparent 45%);
+  pointer-events: none; z-index: 0;
+}
+.login-shell {
+  position: relative; z-index: 1; width: 100%; max-width: 420px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-lg); box-shadow: var(--sh-lg);
+  padding: 40px 36px 32px;
+}
+.brand-header { text-align: center; margin-bottom: 32px; }
+.brand-logo {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 56px; height: 56px; background: var(--navy); color: #fff;
+  border-radius: 12px; font-size: 24px; font-weight: 700;
+  margin-bottom: 16px; letter-spacing: -1px;
+}
+.brand-header h1 { font-size: 20px; font-weight: 700; color: var(--t1); letter-spacing: -0.3px; margin-bottom: 4px; }
+.brand-header p { font-size: 11px; color: var(--t3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; }
+.divider { height: 1px; background: var(--border); margin-bottom: 24px; }
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block; font-size: 11px; font-weight: 600; color: var(--t2);
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
+}
+.form-input {
+  width: 100%; padding: 10px 12px;
+  border: 1.5px solid var(--border-2); border-radius: var(--r-md);
+  font-size: 13px; font-family: var(--font);
+  background: #FAFCFF; color: var(--t1); outline: none;
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.form-input:focus { border-color: var(--blue); background: #fff; box-shadow: 0 0 0 3px var(--blue-dim); }
+.form-input::placeholder { color: var(--t3); }
+.btn-primary {
+  width: 100%; background: var(--blue); color: #fff;
+  border: none; border-radius: var(--r-md); padding: 11px 16px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.3px;
+  cursor: pointer; margin-top: 8px;
+  transition: background 0.15s, transform 0.1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-primary:hover:not(:disabled) { background: #1468B3; }
+.btn-primary:active:not(:disabled) { transform: translateY(1px); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.spinner {
+  display: none; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.btn-primary.loading .spinner { display: inline-block; }
+.message {
+  margin-top: 16px; padding: 10px 14px; border-radius: var(--r-md);
+  font-size: 12px; font-weight: 500; display: none; line-height: 1.4;
+}
+.message.error { background: var(--red-dim); border: 1px solid rgba(229,56,59,0.25); color: #991B1B; display: block; }
+.message.success { background: #ECFDF5; border: 1px solid rgba(14,164,114,0.25); color: #065F46; display: block; }
+.footer-note {
+  text-align: center; margin-top: 28px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px; color: var(--t3); letter-spacing: 0.3px;
+}
+.footer-note strong { color: var(--blue); font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="login-shell">
+  <div class="brand-header">
+    <div class="brand-logo">K</div>
+    <h1>Branches Coverage</h1>
+    <p>KIB Retail Banking · Absence & Coverage</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <form id="loginForm" onsubmit="return doLogin(event)">
+    <div class="form-group">
+      <label class="form-label" for="username">Username</label>
+      <input type="text" id="username" class="form-input" placeholder="e.g. talbaghli" autocomplete="username" required>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="password">Password</label>
+      <input type="password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password" required>
+    </div>
+
+    <button type="submit" class="btn-primary" id="loginBtn">
+      <span id="btnText">Sign In</span>
+      <span class="spinner"></span>
+    </button>
+
+    <div class="message" id="msg"></div>
+  </form>
+
+  <div class="footer-note">
+    KIB CC <strong>·</strong> Contact Center Tools <strong>·</strong> v2.0
+  </div>
+</div>
+
+<script>
+  const GAS_URL = 'https://script.google.com/macros/s/AKfycbzwsEYLm1mvl8dwodsptOZ0dgMLRNAmvrn5N4npf96vKR7eqC_dhJoPQDy-1Zf0CQq9/exec';
+  const SESSION_KEY = 'branches_session';
+
+  if (localStorage.getItem(SESSION_KEY)) window.location.href = 'app.html';
+
+  function showMsg(text, type) {
+    const m = document.getElementById('msg');
+    m.textContent = text;
+    m.className = 'message ' + type;
+  }
+
+  async function callAPI(action, payload) {
+    const res = await fetch(GAS_URL, { method: 'POST', body: JSON.stringify({ action, ...payload }) });
+    const data = await res.json();
+    return Array.isArray(data) ? data[0] : data;
+  }
+
+  async function doLogin(e) {
+    e.preventDefault();
+    const btn = document.getElementById('loginBtn');
+    const btnText = document.getElementById('btnText');
+    const u = document.getElementById('username').value.trim();
+    const p = document.getElementById('password').value;
+
+    if (!u || !p) { showMsg('Please enter both username and password', 'error'); return false; }
+
+    btn.classList.add('loading');
+    btn.disabled = true;
+    btnText.textContent = 'Signing in...';
+    showMsg('', '');
+
+    try {
+      const res = await callAPI('login', { username: u, password: p });
+      if (res && res.ok) {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(res.user));
+        showMsg('Welcome, ' + res.user.name + '. Redirecting...', 'success');
+        setTimeout(() => { window.location.href = 'app.html'; }, 600);
+      } else {
+        showMsg(res?.error || 'Invalid credentials', 'error');
+        btn.classList.remove('loading');
+        btn.disabled = false;
+        btnText.textContent = 'Sign In';
+      }
+    } catch (err) {
+      showMsg('Connection error. Please try again.', 'error');
+      btn.classList.remove('loading');
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+    }
+    return false;
+  }
+</script>
+</body>
+</html>
