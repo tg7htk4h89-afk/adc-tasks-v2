@@ -200,49 +200,49 @@ function renderHead(t){
   var head=U.el('tHead'); if(!head) return;
   var pct=Math.min(100,t.progress_pct||0);
   var pc=pct>=100?'#6EE7B7':'#93C5FD';
-  var btns=[0,25,50,75,100].map(function(v){
+
+  function qbtn(v){
     var on=Math.round(pct)===v;
-    return '<button onclick="quickProgress('+v+')" class="qp-btn'+(on?' qp-on':'')+'" data-v="'+v+'">'+v+'%</button>';
-  }).join('');
-  head.innerHTML=
-    '<div style="background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);padding:18px 20px 0;position:relative;overflow:hidden">'+
-      '<div style="position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05)"></div>'+
-      '<div style="position:relative;z-index:1">'+
-        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'+
-          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">'+
-            '<span class="badge '+(BADGE_CLS[t.status]||'b-can')+'">'+U.esc(t.status)+'</span>'+
-            '<span class="badge" style="background:rgba(255,255,255,.15);color:#fff">'+U.esc(t.priority||'')+'</span>'+
-            (t.delegated_flag?'<span class="badge" style="background:rgba(123,97,255,.3);color:#C4B5FD">Delegated</span>':'')+
-          '</div>'+
-          '<button onclick="closeTask()" style="background:rgba(255,255,255,.12);border:none;border-radius:50%;width:30px;height:30px;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1;transition:background .15s">&#x2715;</button>'+
-        '</div>'+
-        '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:6px">'+U.esc(t.title)+'</div>'+
-        '<div style="display:flex;align-items:center;gap:14px;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px">'+
-          (t.category?'<span>'+U.esc(t.category)+'</span>':'')+
-          (t.due_datetime||t.due_date?'<span>Due '+U.date(t.due_datetime||t.due_date)+'</span>':'')+
-          '<span>SLA '+Math.round(t.sla_pct||0)+'%</span>'+
-        '</div>'+
-        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">'+
-          '<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px">Progress</span>'+
-          '<span id="hPctLbl" style="font-size:13px;font-weight:800;color:'+pc+'">'+pct+'%</span>'+
-        '</div>'+
-        '<div style="height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:10px">'+
-          '<div id="hPctBar" style="height:100%;width:'+pct+'%;background:'+pc+';border-radius:4px;transition:width .4s"></div>'+
-        '</div>'+
-        '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">'+btns+'</div>'+
-      '</div>'+
-    '</div>'+
-    '<div class="tabs" id="tTabs">'+
-      '<button class="tab on" onclick="switchTab(\'det\',this)">Details</button>'+
-      '<button class="tab" onclick="switchTab(\'sub\',this)">Sub-tasks</button>'+
-      '<button class="tab" onclick="switchTab(\'cmt\',this)">Comments</button>'+
-      '<button class="tab" onclick="switchTab(\'ext\',this)">Extension</button>'+
-      '<button class="tab" onclick="switchTab(\'act\',this)">Activity</button>'+
-    '</div>'+
-    '<style>'+
-      '.qp-btn{padding:4px 11px;border-radius:20px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.5);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}'+
-      '.qp-btn:hover,.qp-btn.qp-on{border-color:#93C5FD;background:rgba(147,197,253,.2);color:#93C5FD}'+
-    '</style>';
+    var bc=on?'#93C5FD':'rgba(255,255,255,.25)';
+    var bg=on?'rgba(147,197,253,.2)':'transparent';
+    var co=on?'#93C5FD':'rgba(255,255,255,.55)';
+    return '<button onclick="quickProgress('+v+')" data-v="'+v+'" style="padding:4px 11px;border-radius:20px;border:1px solid '+bc+';background:'+bg+';color:'+co+';font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s">'+v+'%</button>';
+  }
+
+  head.innerHTML =
+    '<div style="background:linear-gradient(135deg,var(--navy) 0%,var(--blue) 100%);padding:18px 20px 0;position:relative;overflow:hidden">' +
+      '<div style="position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.05)"></div>' +
+      '<div style="position:relative;z-index:1">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+          '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">' +
+            '<span class="badge '+(BADGE_CLS[t.status]||'b-can')+'">'+U.esc(t.status)+'</span>' +
+            '<span class="badge" style="background:rgba(255,255,255,.15);color:#fff">'+U.esc(t.priority||'')+'</span>' +
+            (t.delegated_flag?'<span class="badge" style="background:rgba(123,97,255,.3);color:#C4B5FD">Delegated</span>':'') +
+          '</div>' +
+          '<button onclick="closeTask()" style="background:rgba(255,255,255,.15);border:none;border-radius:50%;width:30px;height:30px;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;line-height:1">&#x2715;</button>' +
+        '</div>' +
+        '<div style="font-size:17px;font-weight:800;color:#fff;line-height:1.3;margin-bottom:6px">'+U.esc(t.title)+'</div>' +
+        '<div style="display:flex;align-items:center;gap:14px;font-size:11px;color:rgba(255,255,255,.5);margin-bottom:12px">' +
+          (t.category?'<span>'+U.esc(t.category)+'</span>':'') +
+          (t.due_datetime||t.due_date?'<span>Due '+U.date(t.due_datetime||t.due_date)+'</span>':'') +
+          '<span>SLA '+Math.round(t.sla_pct||0)+'%</span>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">' +
+          '<span style="font-size:10px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px">Progress</span>' +
+          '<span id="hPctLbl" style="font-size:13px;font-weight:800;color:'+pc+'">'+pct+'%</span>' +
+        '</div>' +
+        '<div style="height:6px;background:rgba(255,255,255,.15);border-radius:4px;overflow:hidden;margin-bottom:10px">' +
+          '<div id="hPctBar" style="height:100%;width:'+pct+'%;background:'+pc+';border-radius:4px;transition:width .4s"></div>' +
+        '</div>' +
+        '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">' +
+          [0,25,50,75,100].map(qbtn).join('') +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    ['Details:det','Sub-tasks:sub','Comments:cmt','Extension:ext','Activity:act'].reduce(function(h,s,i){
+      var p=s.split(':');
+      return h+'<button class="tab'+(i===0?' on':'')+'" onclick="switchTab(\''+p[1]+'\',this)">'+p[0]+'</button>';
+    },'<div class="tabs" id="tTabs">') + '</div>';
 }
 
 
