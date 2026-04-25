@@ -179,6 +179,7 @@ function setFilter(f,el){
 async function openTask(id){
   var modal=U.el('tModal'), sheet=U.el('tSheet'), head=U.el('tHead'), body=U.el('tBody');
   if(!modal) return;
+  if(sheet){ sheet.style.transition='none'; sheet.style.transform='translateY(0)'; sheet.style.opacity='1'; }
   modal.style.display='flex';
   head.innerHTML='';
   body.innerHTML='<div class="loading"><div class="spin" style="margin-bottom:10px"></div><div>Loading...</div></div>';
@@ -475,7 +476,4 @@ async function submitTask(){
     });
     U.toast('Task created','success'); closeNew(); _sel=[]; load();
   }catch(ex){ U.toast(ex.message,'error'); }
-}
-function closeTask(){
-  var modal=U.el('tModal'); if(modal) modal.style.display='none';
 }
