@@ -179,11 +179,30 @@ function setFilter(f,el){
 async function openTask(id){
   var modal=U.el('tModal'), sheet=U.el('tSheet'), head=U.el('tHead'), body=U.el('tBody');
   if(!modal) return;
+  var mob=window.innerWidth<=768;
+  // Reset sheet state
+  sheet.style.transition='none';
+  if(mob){
+    modal.style.alignItems='flex-end';
+    modal.style.padding='0';
+    sheet.style.borderRadius='18px 18px 0 0';
+    sheet.style.maxWidth='100%';
+    sheet.style.height='92vh';
+    sheet.style.opacity='1';
+    sheet.style.transform='translateY(100%)';
+  } else {
+    modal.style.alignItems='center';
+    modal.style.padding='20px';
+    sheet.style.borderRadius='var(--r3)';
+    sheet.style.maxWidth='860px';
+    sheet.style.height='88vh';
+    sheet.style.opacity='0';
+    sheet.style.transform='scale(.97) translateY(10px)';
+  }
   modal.style.display='flex';
   head.innerHTML='';
   body.innerHTML='<div class="loading"><div class="spin" style="margin-bottom:10px"></div><div>Loading...</div></div>';
   requestAnimationFrame(function(){ requestAnimationFrame(function(){
-    var mob=window.innerWidth<=768;
     sheet.style.transition='transform .3s cubic-bezier(.32,0,.15,1)'+(mob?'':',opacity .25s');
     sheet.style.transform=mob?'translateY(0)':'scale(1) translateY(0)';
     if(!mob) sheet.style.opacity='1';
